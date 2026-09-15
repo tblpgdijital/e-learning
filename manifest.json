@@ -2,9 +2,8 @@
   "name": "TUI BLUE Palm Garden Eğitim Portalı",
   "short_name": "TBPG Eğitim",
   "description": "TUI BLUE Palm Garden Online Eğitim Portalı",
-  "id": "/e-learning/",
-  "start_url": "/e-learning/",
-  "scope": "/e-learning/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#f4f6f9",
@@ -12,13 +11,13 @@
   "lang": "tr",
   "icons": [
     {
-      "src": "/e-learning/icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "/e-learning/icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

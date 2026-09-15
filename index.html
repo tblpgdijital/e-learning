@@ -3,8 +3,6 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#002b49">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,165 +12,166 @@
   <link rel="icon" href="./icon-192.png">
   <title>TUI BLUE Palm Garden Eğitim Portalı</title>
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script src="./config.js?v=shared-onesignal-20260913-3"></script>
+  <script src="./config.js?v=20260915"></script>
   <style>
-    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f4f6f9;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f4f6f9;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
     #appFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
     #boot{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#002b49,#004d80);color:#fff;transition:opacity .25s ease}
-    #boot.hide{opacity:0;pointer-events:none}.bootBox{text-align:center;padding:24px}.bootIcon{width:72px;height:72px;border-radius:22px;margin:0 auto 14px;display:grid;place-items:center;background:#fff;color:#002b49;font-size:34px;box-shadow:0 15px 45px rgba(0,0,0,.2)}
-    .bootTitle{font-weight:800;font-size:18px}.bootSub{opacity:.75;font-size:12px;margin-top:5px}.bootLine{width:180px;height:5px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;margin:18px auto 0}.bootLine:after{content:"";display:block;width:45%;height:100%;background:#43e0cc;border-radius:inherit;animation:move 1.2s ease-in-out infinite}@keyframes move{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
-    #pushBtn{position:fixed;right:14px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:99999;border:0;border-radius:999px;padding:12px 16px;background:#002b49;color:#fff;font-weight:800;box-shadow:0 10px 28px rgba(0,43,73,.28);display:none;cursor:pointer}
-    #installTip{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:100000;background:#fff;color:#17384c;border:1px solid #cfe0ea;border-radius:16px;padding:13px 42px 13px 14px;box-shadow:0 12px 34px rgba(0,59,106,.16);font-size:13px;line-height:1.45;display:none}#installTip b{color:#002b49}#tipClose{position:absolute;right:8px;top:7px;width:30px;height:30px;border:0;border-radius:10px;background:#eef4f8;color:#31596e;font-size:19px}
-    #status{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:100001;background:rgba(0,43,73,.95);color:#fff;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:700;display:none;max-width:calc(100% - 24px);text-align:center}
+    #boot.hide{opacity:0;pointer-events:none}
+    .bootBox{text-align:center;padding:24px}.bootIcon{width:76px;height:76px;border-radius:22px;margin:0 auto 14px;display:grid;place-items:center;background:#fff;color:#002b49;font-size:35px;font-weight:900;box-shadow:0 15px 45px rgba(0,0,0,.2)}
+    .bootTitle{font-weight:800;font-size:18px}.bootSub{opacity:.78;font-size:12px;margin-top:5px}.bootLine{width:180px;height:5px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;margin:18px auto 0}
+    .bootLine:after{content:"";display:block;width:45%;height:100%;background:#43e0cc;border-radius:inherit;animation:move 1.2s ease-in-out infinite}@keyframes move{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
+    .floatingBtn{position:fixed;right:14px;z-index:99999;border:0;border-radius:999px;padding:11px 15px;background:#002b49;color:#fff;font-weight:800;box-shadow:0 10px 28px rgba(0,43,73,.28);display:none;cursor:pointer}
+    #pushBtn{bottom:calc(18px + env(safe-area-inset-bottom))}
+    #installBtn{bottom:calc(70px + env(safe-area-inset-bottom));background:#008577}
+    #installTip{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:100000;background:#fff;color:#17384c;border:1px solid #cfe0ea;border-radius:16px;padding:13px 42px 13px 14px;box-shadow:0 12px 34px rgba(0,59,106,.16);font-size:13px;line-height:1.45;display:none}
+    #installTip b{color:#002b49}#tipClose{position:absolute;right:8px;top:7px;width:30px;height:30px;border:0;border-radius:10px;background:#eef4f8;color:#31596e;font-size:19px}
+    #status{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:100001;background:rgba(0,43,73,.96);color:#fff;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:700;display:none;max-width:calc(100% - 24px);text-align:center}
+    #configError{position:fixed;inset:0;z-index:200000;background:#f4f6f9;display:none;align-items:center;justify-content:center;padding:22px}.configCard{max-width:540px;background:#fff;border-radius:18px;padding:24px;box-shadow:0 18px 48px rgba(0,43,73,.15);color:#17384c;line-height:1.55}.configCard h2{margin:0 0 10px;color:#002b49;font-size:18px}.configCard code{display:block;white-space:normal;background:#eef4f8;padding:10px;border-radius:9px;font-size:12px}
   </style>
 </head>
 <body>
   <div id="boot"><div class="bootBox"><div class="bootIcon">🎓</div><div class="bootTitle">TUI BLUE Palm Garden</div><div class="bootSub">Eğitim Portalı açılıyor...</div><div class="bootLine"></div></div></div>
   <iframe id="appFrame" title="TUI BLUE Palm Garden Eğitim Portalı" allow="clipboard-read; clipboard-write; camera; microphone; fullscreen; autoplay" allowfullscreen></iframe>
-  <button id="pushBtn" type="button">🔔 Bildirimleri Aç</button>
+  <button id="installBtn" class="floatingBtn" type="button">📲 Uygulamayı Yükle</button>
+  <button id="pushBtn" class="floatingBtn" type="button">🔔 Bildirimleri Aç</button>
   <div id="installTip"><button id="tipClose" type="button">×</button><b>iPhone:</b> Bildirim alabilmek için önce bu sayfayı <b>Ana Ekrana Ekle</b>. Sonra ana ekrandaki <b>TBPG Eğitim</b> ikonundan açıp <b>“Bildirimleri Aç”</b> butonuna dokunun.</div>
   <div id="status"></div>
+  <div id="configError"><div class="configCard"><h2>PWA yapılandırması eksik</h2><p><b>config.js</b> dosyasındaki <b>APP_URL</b> alanına mevcut Eğitim Portalı Apps Script <b>/exec</b> adresini yazın.</p><code>APP_URL: "https://script.google.com/macros/s/.../exec"</code></div></div>
+
 <script>
 (() => {
-  'use strict';
+  "use strict";
   const cfg = window.TBPG_EDUCATION_CONFIG || {};
-  const frame = document.getElementById('appFrame');
-  const boot = document.getElementById('boot');
-  const pushBtn = document.getElementById('pushBtn');
-  const installTip = document.getElementById('installTip');
-  let currentEducationId = '';
+  const frame = document.getElementById("appFrame");
+  const boot = document.getElementById("boot");
+  const pushBtn = document.getElementById("pushBtn");
+  const installBtn = document.getElementById("installBtn");
+  const installTip = document.getElementById("installTip");
+  const configError = document.getElementById("configError");
   let oneSignalApi = null;
+  let currentEducationId = "";
   let pendingEducationUser = null;
+  let deferredInstallPrompt = null;
 
-
-  const PWA_STATUS_API = 'https://script.google.com/macros/s/AKfycbyXiDd0gtdLwH0LWwo4C77PpDQmM8iDTA0B9u-ZrHy0AAT6DOx2OEDEAtyPPJ0UI2Y/exec';
-  const SHARED_DEVICE_KEY = 'tbpg_device_id_v1';
-
-  function sharedDeviceId(){
-    let id=localStorage.getItem(SHARED_DEVICE_KEY);
+  function isIOS(){
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  }
+  function isStandalone(){
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+  function showStatus(text, ms=2800){
+    const e=document.getElementById("status");
+    e.textContent=text;
+    e.style.display="block";
+    clearTimeout(showStatus.timer);
+    showStatus.timer=setTimeout(()=>e.style.display="none",ms);
+  }
+  function validAppUrl(){
+    return /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec(?:\?.*)?$/i.test(String(cfg.APP_URL||"").trim());
+  }
+  function trustedPortalOrigin(origin){
+    return origin === "https://script.google.com" ||
+      /^https:\/\/[a-z0-9-]+\.script\.googleusercontent\.com$/i.test(origin || "");
+  }
+  function deviceId(){
+    const key="tbpg_egitim_pwa_device_v2";
+    let id=localStorage.getItem(key);
     if(!id){
-      id=(window.crypto&&crypto.randomUUID)
-        ? crypto.randomUUID()
-        : 'dev-'+Date.now()+'-'+Math.random().toString(36).slice(2);
-      localStorage.setItem(SHARED_DEVICE_KEY,id);
+      id=(crypto && crypto.randomUUID) ? crypto.randomUUID() : "D-"+Date.now()+"-"+Math.random().toString(36).slice(2);
+      localStorage.setItem(key,id);
     }
     return id;
   }
-
-  function platformName(){
-    const ua=navigator.userAgent||'';
-    if(/iPad|iPhone|iPod/i.test(ua))return 'iOS';
-    if(/Android/i.test(ua))return 'Android';
-    if(/Windows/i.test(ua))return 'Windows';
-    if(/Macintosh|Mac OS X/i.test(ua))return 'macOS';
-    return 'Diğer';
-  }
-
-  function oneSignalSubscriptionId(){
-    try{
-      return String(oneSignalApi?.User?.PushSubscription?.id||'');
-    }catch(_){
-      return '';
+  function maybeShowIOSInstallTip(){
+    if(isIOS() && !isStandalone() && localStorage.getItem("egitim_install_tip_closed")!=="1"){
+      installTip.style.display="block";
     }
   }
+  document.getElementById("tipClose").addEventListener("click",()=>{
+    installTip.style.display="none";
+    localStorage.setItem("egitim_install_tip_closed","1");
+  });
 
-  function sendPwaStatus(app,payload){
-    if(!payload||!payload.educationId||!payload.pwaToken)return Promise.resolve(false);
+  if(!validAppUrl()){
+    boot.classList.add("hide");
+    configError.style.display="flex";
+    return;
+  }
 
-    const cb='tbpgPwaCb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
-    const qs=new URLSearchParams({
-      api:'pwaPing',
-      callback:cb,
-      token:String(payload.pwaToken||''),
-      educationId:String(payload.educationId||''),
-      app:String(app||''),
-      deviceId:sharedDeviceId(),
-      installed:isStandalone()?'1':'0',
-      permission:('Notification' in window?Notification.permission:'unsupported'),
-      subscriptionId:oneSignalSubscriptionId(),
-      platform:platformName(),
-      userAgent:String(navigator.userAgent||'').slice(0,380)
-    });
+  frame.src=cfg.APP_URL;
+  frame.addEventListener("load",()=>setTimeout(()=>boot.classList.add("hide"),180));
 
-    return new Promise(resolve=>{
-      const s=document.createElement('script');
-      let timer=null;
-
-      window[cb]=function(result){
-        clearTimeout(timer);
-        try{delete window[cb]}catch(_){}
-        s.remove();
-        resolve(!!(result&&result.ok));
-      };
-
-      s.onerror=function(){
-        clearTimeout(timer);
-        try{delete window[cb]}catch(_){}
-        s.remove();
-        resolve(false);
-      };
-
-      timer=setTimeout(()=>{
-        try{delete window[cb]}catch(_){}
-        s.remove();
-        resolve(false);
-      },10000);
-
-      s.src=PWA_STATUS_API+'?'+qs.toString();
-      document.head.appendChild(s);
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",()=>{
+      navigator.serviceWorker.register(cfg.ONESIGNAL_WORKER_PATH || "./service-worker.js",{
+        scope: cfg.ONESIGNAL_WORKER_SCOPE || "./"
+      }).catch(err=>console.warn("PWA worker:",err));
     });
   }
 
-  function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
-  function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
-  function showStatus(text,ms=2600){const e=document.getElementById('status');e.textContent=text;e.style.display='block';clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>e.style.display='none',ms)}
-  function maybeShowIOSInstallTip(){if(isIOS()&&!isStandalone()&&localStorage.getItem('egitim_install_tip_closed')!=='1')installTip.style.display='block'}
-  document.getElementById('tipClose').addEventListener('click',()=>{installTip.style.display='none';localStorage.setItem('egitim_install_tip_closed','1')});
-
-  frame.src = cfg.APP_URL;
-  frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
-
-  if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
-  }
+  window.addEventListener("beforeinstallprompt",event=>{
+    event.preventDefault();
+    deferredInstallPrompt=event;
+    if(!isStandalone()) installBtn.style.display="block";
+  });
+  installBtn.addEventListener("click",async()=>{
+    if(!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    try{await deferredInstallPrompt.userChoice}catch(_){}
+    deferredInstallPrompt=null;
+    installBtn.style.display="none";
+  });
+  window.addEventListener("appinstalled",()=>{installBtn.style.display="none";showStatus("Eğitim uygulaması yüklendi ✓",3500)});
 
   function refreshPushButton(){
-    const supported=('Notification' in window)&&('serviceWorker' in navigator);
-    if(!supported){pushBtn.style.display='none';return}
-    if(isIOS()&&!isStandalone()){pushBtn.style.display='none';maybeShowIOSInstallTip();return}
-
-    if(Notification.permission==='granted'){
-      pushBtn.style.display='none';
-      return;
-    }
-
-    pushBtn.style.display='block';
-    pushBtn.textContent = Notification.permission==='denied'
-      ? '🔕 Bildirim İzni Kapalı'
-      : '🔔 Bildirimleri Aç';
+    const supported=("Notification" in window) && ("serviceWorker" in navigator);
+    if(!supported){pushBtn.style.display="none";return}
+    if(isIOS() && !isStandalone()){pushBtn.style.display="none";maybeShowIOSInstallTip();return}
+    if(Notification.permission==="granted"){pushBtn.style.display="none";return}
+    pushBtn.style.display="block";
+    pushBtn.textContent=Notification.permission==="denied" ? "🔕 Bildirim İzni Kapalı" : "🔔 Bildirimleri Aç";
   }
 
   async function setEducationTags(payload){
     if(!oneSignalApi) return;
     await oneSignalApi.User.addTags({
-      portal_egitim:'1',
-      egitim_departman:String(payload.department||''),
-      egitim_rol:String(payload.role||'')
+      portal_egitim:"1",
+      egitim_departman:String(payload.department||""),
+      egitim_rol:String(payload.role||"")
     });
   }
 
+  async function pwaPing(payload){
+    if(!payload || !payload.educationId || !payload.pwaToken) return;
+    try{
+      const u=new URL(cfg.APP_URL);
+      u.searchParams.set("api","pwaPing");
+      u.searchParams.set("educationId",String(payload.educationId));
+      u.searchParams.set("token",String(payload.pwaToken));
+      u.searchParams.set("deviceId",deviceId());
+      u.searchParams.set("platform",String(navigator.platform||""));
+      u.searchParams.set("standalone",String(isStandalone()));
+      u.searchParams.set("notification",("Notification" in window)?String(Notification.permission):"unsupported");
+      u.searchParams.set("ua",String(navigator.userAgent||"").slice(0,450));
+      await fetch(u.toString(),{method:"GET",mode:"no-cors",cache:"no-store",credentials:"omit"});
+    }catch(err){console.warn("PWA ping:",err)}
+  }
+
   async function bindOneSignalUser(payload){
-    if(!payload||!payload.educationId)return;
+    if(!payload || !payload.educationId) return;
     pendingEducationUser=payload;
     currentEducationId=String(payload.educationId).trim();
-    if(!currentEducationId)return;
-    if(!oneSignalApi){ refreshPushButton(); return; }
+    if(!currentEducationId) return;
+    pwaPing(payload);
+    if(!oneSignalApi){refreshPushButton();return}
     try{
       await oneSignalApi.login(currentEducationId);
       await setEducationTags(payload);
       refreshPushButton();
-      await sendPwaStatus('EGITIM',payload);
-    }catch(err){console.error('OneSignal user bind:',err)}
+    }catch(err){console.error("OneSignal user bind:",err)}
   }
 
   window.OneSignalDeferred=window.OneSignalDeferred||[];
@@ -181,94 +180,65 @@
     try{
       await OneSignal.init({
         appId:cfg.ONESIGNAL_APP_ID,
-        serviceWorkerPath:cfg.ONESIGNAL_WORKER_PATH,
-        serviceWorkerParam:{scope:cfg.ONESIGNAL_WORKER_SCOPE},
+        serviceWorkerPath:cfg.ONESIGNAL_WORKER_PATH || "/e-learning/service-worker.js",
+        serviceWorkerParam:{scope:cfg.ONESIGNAL_WORKER_SCOPE || "/e-learning/"},
         autoResubscribe:true
       });
       if(pendingEducationUser) await bindOneSignalUser(pendingEducationUser);
       refreshPushButton();
-    }catch(err){console.error('OneSignal init:',err);showStatus('Bildirim sistemi ayarı kontrol edilmeli',4200)}
+    }catch(err){
+      console.error("OneSignal init:",err);
+      showStatus("Bildirim sistemi ayarını kontrol edin",4200);
+    }
   });
 
-  pushBtn.addEventListener('click',async()=>{
+  pushBtn.addEventListener("click",async()=>{
     try{
-      if(isIOS()&&!isStandalone()){
+      if(isIOS() && !isStandalone()){
         maybeShowIOSInstallTip();
-        showStatus('Önce Ana Ekrana ekleyin');
+        showStatus("Önce Ana Ekrana ekleyin");
         return;
       }
-
-      if(!oneSignalApi){
-        showStatus('Bildirim sistemi hazırlanıyor');
+      if(!oneSignalApi){showStatus("Bildirim sistemi hazırlanıyor");return}
+      if(Notification.permission==="denied"){
+        showStatus("Bildirim izni tarayıcıda engelli. Site ayarlarından Bildirimler > İzin ver seçin.",6500);
         return;
       }
-
-      if(Notification.permission==='denied'){
-        showStatus('Bildirim izni tarayıcıda engelli. Adres çubuğu > Site ayarları > Bildirimler > İzin ver.',6500);
-        return;
-      }
-
-      if(currentEducationId){
-        await oneSignalApi.login(currentEducationId);
-      }
-
+      if(currentEducationId) await oneSignalApi.login(currentEducationId);
       await oneSignalApi.Notifications.requestPermission();
-
-      if(Notification.permission==='granted'){
+      if(Notification.permission==="granted"){
         try{
           if(oneSignalApi.User && oneSignalApi.User.PushSubscription){
             await oneSignalApi.User.PushSubscription.optIn();
           }
         }catch(_){}
-
-        if(currentEducationId){
-          await oneSignalApi.User.addTag('portal_egitim','1');
-        }
-
-        if(pendingEducationUser){
-          await sendPwaStatus('EGITIM',pendingEducationUser);
-        }
-
-        pushBtn.style.display='none';
-        showStatus('Eğitim bildirimleri açıldı ✓',3500);
+        if(currentEducationId) await oneSignalApi.User.addTag("portal_egitim","1");
+        if(pendingEducationUser) pwaPing(pendingEducationUser);
+        pushBtn.style.display="none";
+        showStatus("Eğitim bildirimleri açıldı ✓",3500);
       }else{
         refreshPushButton();
-        showStatus('Bildirim izni verilmedi',3000);
+        showStatus("Bildirim izni verilmedi",3000);
       }
     }catch(err){
-      console.error('Permission:',err);
+      console.error("Notification permission:",err);
       refreshPushButton();
-      showStatus('Bildirim izni açılamadı',3500);
+      showStatus("Bildirim izni açılamadı",3500);
     }
   });
 
-
-  function trustedAppsScriptOrigin(origin){
-    try{
-      const u=new URL(String(origin||''));
-      const h=u.hostname.toLowerCase();
-      return u.protocol==='https:' && (
-        h==='script.google.com' ||
-        h==='script.googleusercontent.com' ||
-        h.endsWith('.script.googleusercontent.com')
-      );
-    }catch(_){
-      return false;
-    }
-  }
-
-  window.addEventListener('message',async(event)=>{
-    if(!frame||event.source!==frame.contentWindow||!trustedAppsScriptOrigin(event.origin))return;
+  window.addEventListener("message",async event=>{
+    if(!frame || event.source!==frame.contentWindow) return;
+    if(!trustedPortalOrigin(event.origin)) return;
     const data=event.data||{};
-    if(data.type==='TBPG_EDUCATION_USER'){
+    if(data.type==="TBPG_EDUCATION_USER"){
       await bindOneSignalUser(data);
-    }else if(data.type==='TBPG_EDUCATION_LOGOUT'){
-      // OneSignal artık Güvenlik + Eğitim için ORTAK uygulamadır.
-      // Portal çıkışı push aboneliğini veya ortak external_id bağını silmez;
-      // böylece eğitim hatırlatmaları portal kapalıyken de alınabilir.
-      currentEducationId='';
+    }else if(data.type==="TBPG_EDUCATION_LOGOUT"){
+      // Açıkça portal çıkışı, cihazın push aboneliğini kapatmaz.
+      // Böylece kullanıcı portal kapalıyken de eğitim/duyuru bildirimlerini alabilir.
+      currentEducationId="";
       pendingEducationUser=null;
-      pushBtn.style.display='none';
+      pushBtn.style.display="none";
     }
   });
 
