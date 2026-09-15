@@ -1,7 +1,7 @@
 /* TBPG Eğitim PWA + OneSignal birleşik service worker */
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-const CACHE_NAME = "tbpg-egitim-pwa-v20260915";
+const CACHE_NAME = "tbpg-egitim-pwa-v20260915-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
