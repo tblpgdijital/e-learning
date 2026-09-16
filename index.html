@@ -42,7 +42,8 @@
   let currentEducationId = '';
   let oneSignalApi = null;
   let pendingEducationUser = null;
-  let currentPortalMode = 'personel';
+  const outerPortalParam = String(new URLSearchParams(window.location.search).get('portal') || '').toLowerCase();
+  let currentPortalMode = outerPortalParam === 'yonetim' ? 'yonetim' : 'personel';
 
   function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
   function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
@@ -76,7 +77,7 @@
     }catch(_){ return false; }
   }
 
-  loadPortal('personel');
+  loadPortal(currentPortalMode);
   frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
 
   if('serviceWorker' in navigator){
@@ -200,6 +201,7 @@
       const mode=String(data.mode||'').toUpperCase()==='YONETIM'?'yonetim':'personel';
       console.info('[TBPG] Portal switch:',mode,'origin:',event.origin||'(empty)');
       showStatus(mode==='yonetim'?'Yönetici portalı açılıyor...':'Personel portalı açılıyor...',1800);
+      try { history.replaceState(null, '', mode==='yonetim' ? '?portal=yonetim' : '?portal=personel'); } catch(_) {}
       loadPortal(mode);
       return;
     }
