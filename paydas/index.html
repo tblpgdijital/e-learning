@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#003B6A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>TUI BLUE Palm Garden - Paydaş Eğitim Merkezi</title>
+  <script src="../config.js"></script>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f3f8fc;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}#app{position:fixed;inset:0;width:100%;height:100%;border:0;background:white}#boot{position:fixed;inset:0;z-index:9;display:grid;place-items:center;background:radial-gradient(circle at 18% 20%,#28d5c62b,transparent 30%),radial-gradient(circle at 85% 80%,#58a9e133,transparent 34%),linear-gradient(145deg,#002f55,#006b75);color:white;transition:.35s}.hide{opacity:0;pointer-events:none}.box{width:min(410px,90vw);text-align:center;padding:32px 26px;border-radius:28px;background:#ffffff12;border:1px solid #ffffff25;box-shadow:0 28px 70px #0004;backdrop-filter:blur(12px)}.icon{width:84px;height:84px;margin:0 auto 18px;border-radius:26px;display:grid;place-items:center;background:linear-gradient(135deg,#0e9aad,#23c5a8);font-size:34px;animation:float 1.8s infinite ease-in-out}.k{font-size:9px;letter-spacing:2px;font-weight:800;opacity:.65}.t{font-size:22px;font-weight:850;margin-top:6px}.s{font-size:12px;opacity:.78;margin-top:6px}.line{width:210px;height:6px;background:#ffffff22;border-radius:20px;overflow:hidden;margin:20px auto 0}.line:after{content:"";display:block;width:40%;height:100%;background:white;border-radius:inherit;animation:move 1.25s infinite}@keyframes float{50%{transform:translateY(-6px)}}@keyframes move{from{transform:translateX(-115%)}to{transform:translateX(285%)}}
+  </style>
+</head>
+<body>
+<div id="boot"><div class="box"><div class="icon">🤝</div><div class="k">TUI BLUE PALM GARDEN</div><div class="t">PAYDAŞ EĞİTİM MERKEZİ</div><div class="s">Firma ve eğitim bilgileriniz hazırlanıyor...</div><div class="line"></div></div></div>
+<iframe id="app" title="TUI BLUE Palm Garden Paydaş Eğitim Merkezi" allow="fullscreen;autoplay;clipboard-read;clipboard-write" allowfullscreen></iframe>
+<script>
+(function(){
+  const cfg=window.TBPG_EDUCATION_CONFIG||{}; const frame=document.getElementById('app'),boot=document.getElementById('boot');
+  function url(){try{const u=new URL(cfg.APP_URL,location.href);u.searchParams.set('portal','paydas');u.searchParams.set('embedded','1');return u.toString()}catch(e){const sep=String(cfg.APP_URL||'').includes('?')?'&':'?';return String(cfg.APP_URL||'')+sep+'portal=paydas&embedded=1'}}
+  frame.src=url(); frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
+})();
+</script>
+</body>
+</html>
