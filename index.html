@@ -10,24 +10,27 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="icon" href="./icon-192.png">
-  <title>TUI BLUE Palm Garden Eğitim Portalı</title>
-  <meta name="tbpg-build" content="20260916-v10.4">
+  <title>TUI BLUE Palm Garden - Dijital Eğitim Merkezi</title>
+  <meta name="tbpg-build" content="20260916-v10.8">
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script src="./config.js?v=shared-onesignal-20260913-3"></script>
   <style>
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f4f6f9;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
     #appFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
-    #boot{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#002b49,#004d80);color:#fff;transition:opacity .25s ease}
-    #boot.hide{opacity:0;pointer-events:none}.bootBox{text-align:center;padding:24px}.bootIcon{width:72px;height:72px;border-radius:22px;margin:0 auto 14px;display:grid;place-items:center;background:#fff;color:#002b49;font-size:34px;box-shadow:0 15px 45px rgba(0,0,0,.2)}
-    .bootTitle{font-weight:800;font-size:18px}.bootSub{opacity:.75;font-size:12px;margin-top:5px}.bootLine{width:180px;height:5px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;margin:18px auto 0}.bootLine:after{content:"";display:block;width:45%;height:100%;background:#43e0cc;border-radius:inherit;animation:move 1.2s ease-in-out infinite}@keyframes move{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
+    #boot{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 20% 18%,rgba(43,222,199,.22),transparent 33%),radial-gradient(circle at 82% 78%,rgba(59,148,216,.22),transparent 36%),linear-gradient(145deg,#002b49,#006a6a);color:#fff;transition:opacity .35s ease}
+    #boot:before,#boot:after{content:"";position:absolute;width:430px;height:430px;border-radius:50%;filter:blur(10px);opacity:.16;animation:bootGlow 3.6s ease-in-out infinite alternate}#boot:before{left:-190px;top:-200px;background:#5ff2dc}#boot:after{right:-210px;bottom:-220px;background:#70bfff;animation-delay:.6s}
+    #boot.hide{opacity:0;pointer-events:none}.bootBox{position:relative;width:min(410px,90vw);text-align:center;padding:32px 26px 28px;border-radius:28px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.12);box-shadow:0 28px 70px rgba(0,0,0,.24);backdrop-filter:blur(12px);animation:bootCard .55s cubic-bezier(.22,1,.36,1) both}
+    .bootIcon{position:relative;width:82px;height:82px;border-radius:25px;margin:0 auto 17px;display:grid;place-items:center;background:linear-gradient(145deg,#24cfbd,#087d93);box-shadow:0 16px 36px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.18);animation:bootFloat 1.8s ease-in-out infinite}.bootIcon svg{width:39px;height:39px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .bootKicker{font-size:9px;letter-spacing:2px;font-weight:800;opacity:.62;margin-bottom:6px}.bootTitle{font-weight:850;font-size:21px;letter-spacing:.2px}.bootSub{opacity:.76;font-size:12px;margin-top:7px}.bootLine{width:210px;height:6px;background:rgba(255,255,255,.13);border-radius:20px;overflow:hidden;margin:20px auto 0}.bootLine:after{content:"";display:block;width:40%;height:100%;background:linear-gradient(90deg,#fff,#67e4d8,#7ec9ef);border-radius:inherit;animation:move 1.25s ease-in-out infinite}
+    @keyframes move{from{transform:translateX(-115%)}to{transform:translateX(285%)}}@keyframes bootFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes bootCard{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}@keyframes bootGlow{from{transform:translate3d(0,0,0)}to{transform:translate3d(48px,24px,0) scale(1.06)}}
     #pushBtn{position:fixed;right:14px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:99999;border:0;border-radius:999px;padding:12px 16px;background:#002b49;color:#fff;font-weight:800;box-shadow:0 10px 28px rgba(0,43,73,.28);display:none;cursor:pointer}
     #installTip{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:100000;background:#fff;color:#17384c;border:1px solid #cfe0ea;border-radius:16px;padding:13px 42px 13px 14px;box-shadow:0 12px 34px rgba(0,59,106,.16);font-size:13px;line-height:1.45;display:none}#installTip b{color:#002b49}#tipClose{position:absolute;right:8px;top:7px;width:30px;height:30px;border:0;border-radius:10px;background:#eef4f8;color:#31596e;font-size:19px}
     #status{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:100001;background:rgba(0,43,73,.95);color:#fff;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:700;display:none;max-width:calc(100% - 24px);text-align:center}
   </style>
 </head>
 <body>
-  <div id="boot"><div class="bootBox"><div class="bootIcon">🎓</div><div class="bootTitle">TUI BLUE Palm Garden</div><div class="bootSub">Eğitim Portalı açılıyor...</div><div class="bootLine"></div></div></div>
-  <iframe id="appFrame" title="TUI BLUE Palm Garden Eğitim Portalı" allow="clipboard-read; clipboard-write; camera; microphone; fullscreen; autoplay" allowfullscreen></iframe>
+  <div id="boot"><div class="bootBox"><div class="bootIcon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M5 18 24 9l19 9-19 9L5 18Z"/><path d="M12 22v10c7 5 17 5 24 0V22"/><path d="M43 19v12"/></svg></div><div class="bootKicker">TUI BLUE PALM GARDEN</div><div class="bootTitle">DİJİTAL EĞİTİM MERKEZİ</div><div class="bootSub">Kişisel eğitim alanınız hazırlanıyor...</div><div class="bootLine"></div></div></div>
+  <iframe id="appFrame" title="TUI BLUE Palm Garden Dijital Eğitim Merkezi" allow="clipboard-read; clipboard-write; camera; microphone; fullscreen; autoplay" allowfullscreen></iframe>
   <button id="pushBtn" type="button">🔔 Bildirimleri Aç</button>
   <div id="installTip"><button id="tipClose" type="button">×</button><b>iPhone:</b> Bildirim alabilmek için önce bu sayfayı <b>Ana Ekrana Ekle</b>. Sonra ana ekrandaki <b>TBPG Eğitim</b> ikonundan açıp <b>“Bildirimleri Aç”</b> butonuna dokunun.</div>
   <div id="status"></div>
@@ -80,7 +83,7 @@
   frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
 
   if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260916-v104',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260916-v108',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
   }
 
   function refreshPushButton(){
