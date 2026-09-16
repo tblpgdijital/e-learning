@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="icon" href="./icon-192.png">
   <title>TUI BLUE Palm Garden Eğitim Portalı</title>
+  <meta name="tbpg-build" content="20260916-v10.2">
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script src="./config.js?v=shared-onesignal-20260913-3"></script>
   <style>
@@ -79,7 +80,7 @@
   frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
 
   if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260916-v102',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
   }
 
   function refreshPushButton(){
@@ -191,8 +192,13 @@
     // Apps Script/googleusercontent olmak zorunda; hedef URL ise her zaman sabit
     // cfg.APP_URL üzerinden tarafımızdan oluşturulur.
     if(data.type==='TBPG_EDUCATION_PORTAL_SWITCH'){
-      if(data.portal!=='EGITIM' || !isGooglePortalOrigin(event.origin)) return;
+      // Hedef kullanıcı girdisinden URL almıyor; yalnızca iki sabit portal modu arasında
+      // geçiş yapılıyor. Apps Script sandbox'ının event.origin değeri tarayıcıya göre
+      // googleusercontent / script.google.com / null olabildiği için burada origin filtresi
+      // kullanmıyoruz. loadPortal() her zaman sabit cfg.APP_URL'yi kullanır.
+      if(data.portal!=='EGITIM') return;
       const mode=String(data.mode||'').toUpperCase()==='YONETIM'?'yonetim':'personel';
+      console.info('[TBPG] Portal switch:',mode,'origin:',event.origin||'(empty)');
       showStatus(mode==='yonetim'?'Yönetici portalı açılıyor...':'Personel portalı açılıyor...',1800);
       loadPortal(mode);
       return;
