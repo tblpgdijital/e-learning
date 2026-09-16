@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="icon" href="./icon-192.png">
   <title>TUI BLUE Palm Garden Eğitim Portalı</title>
-  <meta name="tbpg-build" content="20260916-v10.2">
+  <meta name="tbpg-build" content="20260916-v10.4">
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script src="./config.js?v=shared-onesignal-20260913-3"></script>
   <style>
@@ -42,8 +42,7 @@
   let currentEducationId = '';
   let oneSignalApi = null;
   let pendingEducationUser = null;
-  const outerPortalParam = String(new URLSearchParams(window.location.search).get('portal') || '').toLowerCase();
-  let currentPortalMode = outerPortalParam === 'yonetim' ? 'yonetim' : 'personel';
+  let currentPortalMode = 'personel';
 
   function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
   function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
@@ -77,11 +76,11 @@
     }catch(_){ return false; }
   }
 
-  loadPortal(currentPortalMode);
+  loadPortal('personel');
   frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
 
   if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260916-v102',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260916-v104',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
   }
 
   function refreshPushButton(){
@@ -194,15 +193,14 @@
     // cfg.APP_URL üzerinden tarafımızdan oluşturulur.
     if(data.type==='TBPG_EDUCATION_PORTAL_SWITCH'){
       // Hedef kullanıcı girdisinden URL almıyor; yalnızca iki sabit portal modu arasında
-      // geçiş yapılıyor. Apps Script sandbox'ının event.origin değeri tarayıcıya göre
-      // googleusercontent / script.google.com / null olabildiği için burada origin filtresi
-      // kullanmıyoruz. loadPortal() her zaman sabit cfg.APP_URL'yi kullanır.
+      // geçiş yapılıyor. Apps Script sandbox'ının event.origin değeri tarayıcıya göre değişebildiği için
+      // burada hedef URL kullanıcıdan alınmaz. Yalnız aynı /e-learning/ klasöründeki iki
+      // sabit GitHub sayfası arasında geçiş yapılır.
       if(data.portal!=='EGITIM') return;
       const mode=String(data.mode||'').toUpperCase()==='YONETIM'?'yonetim':'personel';
       console.info('[TBPG] Portal switch:',mode,'origin:',event.origin||'(empty)');
-      showStatus(mode==='yonetim'?'Yönetici portalı açılıyor...':'Personel portalı açılıyor...',1800);
-      try { history.replaceState(null, '', mode==='yonetim' ? '?portal=yonetim' : '?portal=personel'); } catch(_) {}
-      loadPortal(mode);
+      showStatus(mode==='yonetim'?'Yönetici portalı açılıyor...':'Personel portalı açılıyor...',1200);
+      window.location.href = mode==='yonetim' ? './yonetim.html' : './';
       return;
     }
 
