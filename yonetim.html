@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#002b49">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="TBPG Eğitim">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="icon" href="./icon-192.png">
+  <title>TUI BLUE Palm Garden Eğitim Yönetim Portalı</title>
+  <meta name="tbpg-build" content="20260916-v10.4">
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script src="./config.js?v=shared-onesignal-20260913-3"></script>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f4f6f9;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    #appFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
+    #boot{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#002b49,#004d80);color:#fff;transition:opacity .25s ease}
+    #boot.hide{opacity:0;pointer-events:none}.bootBox{text-align:center;padding:24px}.bootIcon{width:72px;height:72px;border-radius:22px;margin:0 auto 14px;display:grid;place-items:center;background:#fff;color:#002b49;font-size:34px;box-shadow:0 15px 45px rgba(0,0,0,.2)}
+    .bootTitle{font-weight:800;font-size:18px}.bootSub{opacity:.75;font-size:12px;margin-top:5px}.bootLine{width:180px;height:5px;background:rgba(255,255,255,.15);border-radius:20px;overflow:hidden;margin:18px auto 0}.bootLine:after{content:"";display:block;width:45%;height:100%;background:#43e0cc;border-radius:inherit;animation:move 1.2s ease-in-out infinite}@keyframes move{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
+    #pushBtn{position:fixed;right:14px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:99999;border:0;border-radius:999px;padding:12px 16px;background:#002b49;color:#fff;font-weight:800;box-shadow:0 10px 28px rgba(0,43,73,.28);display:none;cursor:pointer}
+    #installTip{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:100000;background:#fff;color:#17384c;border:1px solid #cfe0ea;border-radius:16px;padding:13px 42px 13px 14px;box-shadow:0 12px 34px rgba(0,59,106,.16);font-size:13px;line-height:1.45;display:none}#installTip b{color:#002b49}#tipClose{position:absolute;right:8px;top:7px;width:30px;height:30px;border:0;border-radius:10px;background:#eef4f8;color:#31596e;font-size:19px}
+    #status{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:100001;background:rgba(0,43,73,.95);color:#fff;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:700;display:none;max-width:calc(100% - 24px);text-align:center}
+  </style>
+</head>
+<body>
+  <div id="boot"><div class="bootBox"><div class="bootIcon">🎓</div><div class="bootTitle">TUI BLUE Palm Garden</div><div class="bootSub">Eğitim Yönetim Portalı açılıyor...</div><div class="bootLine"></div></div></div>
+  <iframe id="appFrame" title="TUI BLUE Palm Garden Eğitim Yönetim Portalı" allow="clipboard-read; clipboard-write; camera; microphone; fullscreen; autoplay" allowfullscreen></iframe>
+  <button id="pushBtn" type="button">🔔 Bildirimleri Aç</button>
+  <div id="installTip"><button id="tipClose" type="button">×</button><b>iPhone:</b> Bildirim alabilmek için önce bu sayfayı <b>Ana Ekrana Ekle</b>. Sonra ana ekrandaki <b>TBPG Eğitim</b> ikonundan açıp <b>“Bildirimleri Aç”</b> butonuna dokunun.</div>
+  <div id="status"></div>
+<script>
+(() => {
+  'use strict';
+  const cfg = window.TBPG_EDUCATION_CONFIG || {};
+  const frame = document.getElementById('appFrame');
+  const boot = document.getElementById('boot');
+  const pushBtn = document.getElementById('pushBtn');
+  const installTip = document.getElementById('installTip');
+  let currentEducationId = '';
+  let oneSignalApi = null;
+  let pendingEducationUser = null;
+  let currentPortalMode = 'yonetim';
+
+  function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
+  function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
+  function showStatus(text,ms=2600){const e=document.getElementById('status');e.textContent=text;e.style.display='block';clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>e.style.display='none',ms)}
+  function maybeShowIOSInstallTip(){if(isIOS()&&!isStandalone()&&localStorage.getItem('egitim_install_tip_closed')!=='1')installTip.style.display='block'}
+  document.getElementById('tipClose').addEventListener('click',()=>{installTip.style.display='none';localStorage.setItem('egitim_install_tip_closed','1')});
+
+  function portalUrl(mode){
+    try{
+      const u=new URL(cfg.APP_URL,window.location.href);
+      u.searchParams.set('portal',mode==='yonetim'?'yonetim':'personel');
+      u.searchParams.set('embedded','1');
+      return u.toString();
+    }catch(_){
+      const sep=String(cfg.APP_URL||'').includes('?')?'&':'?';
+      return String(cfg.APP_URL||'')+sep+'portal='+(mode==='yonetim'?'yonetim':'personel')+'&embedded=1';
+    }
+  }
+
+  function loadPortal(mode){
+    currentPortalMode = mode==='yonetim' ? 'yonetim' : 'personel';
+    boot.classList.remove('hide');
+    frame.src = portalUrl(currentPortalMode);
+  }
+
+  function isGooglePortalOrigin(origin){
+    try{
+      const u=new URL(origin);
+      const h=String(u.hostname||'').toLowerCase();
+      return u.protocol==='https:' && (h==='script.google.com' || h==='script.googleusercontent.com' || h.endsWith('.googleusercontent.com'));
+    }catch(_){ return false; }
+  }
+
+  loadPortal('yonetim');
+  frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260916-v104',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
+  }
+
+  function refreshPushButton(){
+    const supported=('Notification' in window)&&('serviceWorker' in navigator);
+    if(!supported){pushBtn.style.display='none';return}
+    if(isIOS()&&!isStandalone()){pushBtn.style.display='none';maybeShowIOSInstallTip();return}
+
+    if(Notification.permission==='granted'){
+      pushBtn.style.display='none';
+      return;
+    }
+
+    pushBtn.style.display='block';
+    pushBtn.textContent = Notification.permission==='denied'
+      ? '🔕 Bildirim İzni Kapalı'
+      : '🔔 Bildirimleri Aç';
+  }
+
+  async function setEducationTags(payload){
+    if(!oneSignalApi) return;
+    await oneSignalApi.User.addTags({
+      portal_egitim:'1',
+      egitim_departman:String(payload.department||''),
+      egitim_rol:String(payload.role||'')
+    });
+  }
+
+  async function bindOneSignalUser(payload){
+    if(!payload||!payload.educationId)return;
+    pendingEducationUser=payload;
+    currentEducationId=String(payload.educationId).trim();
+    if(!currentEducationId)return;
+    if(!oneSignalApi){ refreshPushButton(); return; }
+    try{
+      await oneSignalApi.login(currentEducationId);
+      await setEducationTags(payload);
+      refreshPushButton();
+    }catch(err){console.error('OneSignal user bind:',err)}
+  }
+
+  window.OneSignalDeferred=window.OneSignalDeferred||[];
+  window.OneSignalDeferred.push(async function(OneSignal){
+    oneSignalApi=OneSignal;
+    try{
+      await OneSignal.init({
+        appId:cfg.ONESIGNAL_APP_ID,
+        serviceWorkerPath:cfg.ONESIGNAL_WORKER_PATH,
+        serviceWorkerParam:{scope:cfg.ONESIGNAL_WORKER_SCOPE},
+        autoResubscribe:true
+      });
+      if(pendingEducationUser) await bindOneSignalUser(pendingEducationUser);
+      refreshPushButton();
+    }catch(err){console.error('OneSignal init:',err);showStatus('Bildirim sistemi ayarı kontrol edilmeli',4200)}
+  });
+
+  pushBtn.addEventListener('click',async()=>{
+    try{
+      if(isIOS()&&!isStandalone()){
+        maybeShowIOSInstallTip();
+        showStatus('Önce Ana Ekrana ekleyin');
+        return;
+      }
+
+      if(!oneSignalApi){
+        showStatus('Bildirim sistemi hazırlanıyor');
+        return;
+      }
+
+      if(Notification.permission==='denied'){
+        showStatus('Bildirim izni tarayıcıda engelli. Adres çubuğu > Site ayarları > Bildirimler > İzin ver.',6500);
+        return;
+      }
+
+      if(currentEducationId){
+        await oneSignalApi.login(currentEducationId);
+      }
+
+      await oneSignalApi.Notifications.requestPermission();
+
+      if(Notification.permission==='granted'){
+        try{
+          if(oneSignalApi.User && oneSignalApi.User.PushSubscription){
+            await oneSignalApi.User.PushSubscription.optIn();
+          }
+        }catch(_){}
+
+        if(currentEducationId){
+          await oneSignalApi.User.addTag('portal_egitim','1');
+        }
+
+        pushBtn.style.display='none';
+        showStatus('Eğitim bildirimleri açıldı ✓',3500);
+      }else{
+        refreshPushButton();
+        showStatus('Bildirim izni verilmedi',3000);
+      }
+    }catch(err){
+      console.error('Permission:',err);
+      refreshPushButton();
+      showStatus('Bildirim izni açılamadı',3500);
+    }
+  });
+
+  window.addEventListener('message',async(event)=>{
+    const data=event.data||{};
+
+    // Apps Script HtmlService içindeki gerçek uygulama, GitHub frame'inin bir alt
+    // sandbox penceresinden mesaj gönderebilir. Portal geçişi için kaynak Google
+    // Apps Script/googleusercontent olmak zorunda; hedef URL ise her zaman sabit
+    // cfg.APP_URL üzerinden tarafımızdan oluşturulur.
+    if(data.type==='TBPG_EDUCATION_PORTAL_SWITCH'){
+      // Hedef kullanıcı girdisinden URL almıyor; yalnızca iki sabit portal modu arasında
+      // geçiş yapılıyor. Apps Script sandbox'ının event.origin değeri tarayıcıya göre değişebildiği için
+      // burada hedef URL kullanıcıdan alınmaz. Yalnız aynı /e-learning/ klasöründeki iki
+      // sabit GitHub sayfası arasında geçiş yapılır.
+      if(data.portal!=='EGITIM') return;
+      const mode=String(data.mode||'').toUpperCase()==='YONETIM'?'yonetim':'personel';
+      console.info('[TBPG] Portal switch:',mode,'origin:',event.origin||'(empty)');
+      showStatus(mode==='yonetim'?'Yönetici portalı açılıyor...':'Personel portalı açılıyor...',1200);
+      window.location.href = mode==='yonetim' ? './yonetim.html' : './';
+      return;
+    }
+
+    // Mevcut OneSignal / oturum entegrasyon mantığı korunur.
+    if(!frame||event.source!==frame.contentWindow)return;
+    if(data.type==='TBPG_EDUCATION_USER'){
+      await bindOneSignalUser(data);
+    }else if(data.type==='TBPG_EDUCATION_LOGOUT'){
+      currentEducationId='';
+      pendingEducationUser=null;
+      pushBtn.style.display='none';
+    }
+  });
+
+  maybeShowIOSInstallTip();
+})();
+</script>
+</body>
+</html>
