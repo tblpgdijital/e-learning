@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="icon" href="./icon-192.png">
   <title>TUI BLUE Palm Garden - Yönetim Merkezi</title>
-  <meta name="tbpg-build" content="20260916-v10.8">
+  <meta name="tbpg-build" content="20260917-v11.1-speed">
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script src="./config.js?v=shared-onesignal-20260913-3"></script>
   <style>
@@ -67,7 +67,7 @@
 
   function loadPortal(mode){
     currentPortalMode = mode==='yonetim' ? 'yonetim' : 'personel';
-    boot.classList.remove('hide');
+    bootHazirla();
     frame.src = portalUrl(currentPortalMode);
   }
 
@@ -79,11 +79,27 @@
     }catch(_){ return false; }
   }
 
+  let bootFallbackTimer=null;
+  function bootHazirla(){
+    boot.classList.remove('hide');
+    clearTimeout(bootFallbackTimer);
+    bootFallbackTimer=setTimeout(()=>{
+      boot.classList.add('hide');
+      showStatus('Yönetim verileri beklenenden uzun sürüyor. Ekran arka planda güncellenmeye devam ediyor.',5200);
+    },45000);
+  }
+  function bootKapat(){
+    clearTimeout(bootFallbackTimer);
+    boot.classList.add('hide');
+  }
+
+  // iframe'in yalnız HTML olarak yüklenmesi artık "hazır" sayılmaz.
+  // Asıl Apps Script dashboard'u veriyi ekrana bastığında TBPG_YONETIM_READY yollar.
+  frame.addEventListener('load',()=>console.info('[TBPG] Yönetim iframe yüklendi; dashboard verisi bekleniyor...'));
   loadPortal('yonetim');
-  frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
 
   if('serviceWorker' in navigator){
-    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260916-v108',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260917-v111-speed',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)));
   }
 
   function refreshPushButton(){
@@ -189,6 +205,26 @@
 
   window.addEventListener('message',async(event)=>{
     const data=event.data||{};
+
+    // V11.1: Yönetim kabuğu, iframe load olayında değil gerçek dashboard verisi hazır
+    // olduğunda açılır. Apps Script HtmlService mesajı bir alt sandbox'tan gelebilir.
+    if(data.type==='TBPG_YONETIM_LOADING' && data.portal==='EGITIM'){
+      if(event.origin && !isGooglePortalOrigin(event.origin)) return;
+      if(!boot.classList.contains('hide')) bootHazirla();
+      return;
+    }
+    if(data.type==='TBPG_YONETIM_READY' && data.portal==='EGITIM'){
+      if(event.origin && !isGooglePortalOrigin(event.origin)) return;
+      console.info('[TBPG] Yönetim dashboard hazır:',data.source||'server');
+      bootKapat();
+      return;
+    }
+    if(data.type==='TBPG_YONETIM_ERROR' && data.portal==='EGITIM'){
+      if(event.origin && !isGooglePortalOrigin(event.origin)) return;
+      bootKapat();
+      showStatus('Yönetim verisi alınamadı: '+String(data.message||'Bilinmeyen hata'),6500);
+      return;
+    }
 
     // Apps Script HtmlService içindeki gerçek uygulama, GitHub frame'inin bir alt
     // sandbox penceresinden mesaj gönderebilir. Portal geçişi için kaynak Google
