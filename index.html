@@ -30,6 +30,10 @@
     .installTipHead{display:flex;align-items:center;gap:11px;margin-bottom:10px;padding-right:12px}.installTipIcon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#eaf4ff,#dcecff);color:#0062a1;font-size:22px;box-shadow:inset 0 0 0 1px rgba(0,98,161,.08)}
     .installTipTitle{font-size:16px;font-weight:900;color:#002b49;line-height:1.2}.installTipSub{font-size:12px;color:#64748b;margin-top:2px;font-weight:600}.installSteps{display:grid;gap:7px;margin-top:8px}.installStep{display:flex;align-items:flex-start;gap:8px}.installStepNo{width:22px;height:22px;flex:0 0 22px;border-radius:50%;display:grid;place-items:center;background:#e8f3fb;color:#005f8f;font-size:11px;font-weight:900}.installShare{display:inline-flex;align-items:center;justify-content:center;width:23px;height:23px;vertical-align:middle;margin:0 2px;border:1px solid #cfe0ea;border-radius:7px;background:#f8fbfd;color:#0062a1}.installShare svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.installTipNote{margin-top:10px;padding:9px 10px;border-radius:11px;background:#f3f8fc;color:#486579;font-size:12px;font-weight:600}.installTipActions{display:flex;justify-content:flex-end;margin-top:11px}.installLater{border:0;border-radius:11px;padding:9px 13px;background:#edf4f8;color:#214f69;font-weight:800;font-size:12px;cursor:pointer}#tipClose{position:absolute;right:9px;top:9px;width:32px;height:32px;border:0;border-radius:10px;background:#eef4f8;color:#31596e;font-size:20px;cursor:pointer}
     @media(max-width:520px){#installTip{left:9px;right:9px;bottom:calc(9px + env(safe-area-inset-bottom));padding:14px 43px 13px 14px;border-radius:19px;font-size:13px}.installTipTitle{font-size:15px}.installTipNote{font-size:11px}}
+    #desktopInstallBtn{position:fixed;left:14px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:100002;border:1px solid rgba(255,255,255,.20);border-radius:999px;padding:12px 17px;background:linear-gradient(135deg,#006aa5,#003b68);color:#fff;font-weight:850;font-size:13px;box-shadow:0 12px 30px rgba(0,43,73,.25);display:none;align-items:center;gap:8px;cursor:pointer;animation:installPulse 2.2s ease-in-out infinite}
+    #desktopInstallBtn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(0,43,73,.32)}
+    @keyframes installPulse{0%,100%{box-shadow:0 12px 30px rgba(0,43,73,.25)}50%{box-shadow:0 12px 36px rgba(0,123,193,.42)}}
+    @media(max-width:767px){#desktopInstallBtn{display:none!important}}
     #status{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:100001;background:rgba(6,24,44,.96);color:#fff;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:700;display:none;max-width:calc(100% - 24px);text-align:center}
   </style>
 </head>
@@ -37,6 +41,7 @@
   <div id="boot"><div class="bootBox"><div class="bootIcon" aria-hidden="true" style="font-size:38px">🎓</div><div class="bootKicker">TUI BLUE PALM GARDEN</div><div class="bootTitle">DİJİTAL EĞİTİM MERKEZİ</div><div class="bootSub">Kişisel eğitim alanınız hazırlanıyor...</div><div class="bootLine"></div></div></div>
   <iframe id="appFrame" title="TUI BLUE Palm Garden Eğitim Portalı" allow="clipboard-read; clipboard-write; camera; microphone; fullscreen; autoplay" allowfullscreen></iframe>
   <button id="pushBtn" type="button">🔔 Bildirimleri Aç</button>
+  <button id="desktopInstallBtn" type="button">⬇ Uygulamayı Yükle</button>
   <div id="installTip" role="dialog" aria-live="polite" aria-label="Ana ekrana ekleme bilgisi">
     <button id="tipClose" type="button" aria-label="Kapat">×</button>
     <div class="installTipHead">
@@ -60,6 +65,8 @@
   const boot = document.getElementById('boot');
   const pushBtn = document.getElementById('pushBtn');
   const installTip = document.getElementById('installTip');
+  const desktopInstallBtn = document.getElementById('desktopInstallBtn');
+  let deferredInstallPrompt = null;
   let currentEducationId = '';
   let oneSignalApi = null;
   let pendingEducationUser = null;
@@ -67,6 +74,38 @@
 
   function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
   function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
+  function isDesktopInstallCandidate(){return !isIOS()&&!isStandalone()&&window.matchMedia('(min-width:768px)').matches}
+
+  window.addEventListener('beforeinstallprompt',(event)=>{
+    if(!isDesktopInstallCandidate()) return;
+    event.preventDefault();
+    deferredInstallPrompt=event;
+    desktopInstallBtn.style.display='inline-flex';
+    setTimeout(()=>showStatus('TBPG Eğitim uygulamasını bilgisayarınıza yükleyebilirsiniz.',5200),450);
+  });
+  window.addEventListener('appinstalled',()=>{
+    deferredInstallPrompt=null;
+    desktopInstallBtn.style.display='none';
+    showStatus('TBPG Eğitim bilgisayarınıza yüklendi ✓',3500);
+  });
+  desktopInstallBtn.addEventListener('click',async()=>{
+    if(isStandalone()){desktopInstallBtn.style.display='none';return}
+    if(!deferredInstallPrompt){
+      showStatus('Tarayıcı yükleme seçeneğini henüz hazırlamadı. Edge/Chrome menüsündeki Uygulamalar > Bu siteyi uygulama olarak yükle seçeneğini de kullanabilirsiniz.',6500);
+      return;
+    }
+    const p=deferredInstallPrompt;
+    deferredInstallPrompt=null;
+    try{
+      await p.prompt();
+      const choice=await p.userChoice;
+      if(choice&&choice.outcome==='accepted'){desktopInstallBtn.style.display='none'}
+      else{desktopInstallBtn.style.display='inline-flex'}
+    }catch(err){
+      console.warn('PWA install prompt:',err);
+      desktopInstallBtn.style.display='inline-flex';
+    }
+  });
   function showStatus(text,ms=2600){const e=document.getElementById('status');e.textContent=text;e.style.display='block';clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>e.style.display='none',ms)}
 
   const IOS_INSTALL_SESSION_KEY='tbpg_ios_install_dismissed_v117';
