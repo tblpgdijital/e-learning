@@ -170,7 +170,7 @@ function defs(p){p.scene=p.scene||{};if(p.scene.minSeconds==null)p.scene.minSeco
 function sceneIcon(title,i){var t=String(title||"").toLowerCase();if(i===0)return"⌂";if(t.indexOf("tehlike")>=0)return"△";if(t.indexOf("kritik kontrol")>=0)return"◎";if(t.indexOf("limit")>=0)return"↗";if(t.indexOf("piş")>=0||t.indexOf("ısıt")>=0)return"♨";if(t.indexOf("soğuk")>=0)return"❄";if(t.indexOf("sıcak")>=0)return"≋";if(t.indexOf("ölç")>=0||t.indexOf("kaydet")>=0)return"▤";if(t.indexOf("depo")>=0)return"▦";if(t.indexOf("numune")>=0)return"⊕";return"▣"}
 
 function loadProgress(){try{var p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||"null");if(!p)return;maxUnlocked=Math.max(0,Math.min((state.pages||[]).length-1,Number(p.maxUnlocked)||0));index=Math.max(0,Math.min(maxUnlocked,Number(p.index)||maxUnlocked));if(p.videos&&typeof p.videos==="object"){Object.keys(p.videos).forEach(function(k){videoGate[k]=p.videos[k]})}}catch(e){}}
-function saveProgress(){try{var videos={};Object.keys(videoGate).forEach(function(k){var g=videoGate[k];videos[k]={watched:Number(g.watched)||0,done:!!g.done,required:Number(g.required)||0}});var pct=Math.round(((maxUnlocked+1)/Math.max(1,state.pages.length))*100);var payload={index:index,maxUnlocked:maxUnlocked,percent:pct,videos:videos,updatedAt:Date.now()};localStorage.setItem(PROGRESS_KEY,JSON.stringify(payload));var d=new Date(payload.updatedAt),tm=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");document.getElementById("saveText").textContent="İlerleme kaydedildi";document.getElementById("saveTime").textContent=tm;try{window.parent.postMessage({type:"TBPG_TEK_HTML_ILERLEME",egitimId:EGITIM_ID,index:index,maxUnlocked:maxUnlocked,percent:pct,videos:videos},"*")}catch(e){}}catch(e){}}
+function saveProgress(){try{var videos={};Object.keys(videoGate).forEach(function(k){var g=videoGate[k];videos[k]={watched:Number(g.watched)||0,done:!!g.done,required:Number(g.required)||0}});var pct=Math.round(((maxUnlocked+1)/Math.max(1,state.pages.length))*100);var payload={index:index,maxUnlocked:maxUnlocked,totalScenes:state.pages.length,percent:pct,videos:videos,updatedAt:Date.now()};localStorage.setItem(PROGRESS_KEY,JSON.stringify(payload));var st=document.getElementById("saveText");if(st)st.textContent="İlerleme kaydediliyor…";try{window.parent.postMessage({type:"TBPG_TEK_HTML_ILERLEME",egitimId:EGITIM_ID,index:index,maxUnlocked:maxUnlocked,totalScenes:state.pages.length,percent:pct,videos:videos,updatedAt:payload.updatedAt},"*")}catch(e){}}catch(e){}}
 
 function renderRail(){var rail=document.getElementById("progressRail"),html="";(state.pages||[]).forEach(function(p,i){var done=i<maxUnlocked,active=i===index;html+='<div class="railUnit">';if(i>0)html+='<span class="railSeg '+(i<=maxUnlocked?"done ":"")+(active?"active":"")+'"></span>';html+='<button type="button" class="railNode '+(done?"done ":"")+(active?"active":"")+'" data-i="'+i+'" title="'+esc(p.title||("Sahne "+(i+1)))+'">'+(done?"✓":(i+1))+'</button></div>'});rail.innerHTML=html;Array.from(rail.querySelectorAll(".railNode")).forEach(function(btn){btn.onclick=function(){var n=Number(btn.dataset.i);if(n<=maxUnlocked){index=n;render()}}});var active=rail.querySelector(".railNode.active");if(active)active.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"})}
 function fitCourseSideTitle(){
@@ -232,6 +232,61 @@ document.getElementById("pageUpBtn").onclick=pageUp;
 document.getElementById("pageDownBtn").onclick=pageDown;
 document.getElementById("mobileMenuBtn").onclick=function(){toggleMobileSide()};
 document.getElementById("mobileSideBackdrop").onclick=function(){toggleMobileSide(false)};
+function applyServerProgress(progress){
+  try{
+    progress=progress&&typeof progress==="object"?progress:{};
+    var serverMax=Math.max(0,Math.floor(Number(progress.maxUnlocked)||0));
+    var serverIndex=Math.max(0,Math.floor(Number(progress.index)||serverMax));
+    if(state.pages&&state.pages.length){
+      serverMax=Math.min(serverMax,state.pages.length-1);
+      serverIndex=Math.min(serverIndex,state.pages.length-1);
+    }
+    maxUnlocked=Math.max(maxUnlocked,serverMax);
+    index=Math.max(0,Math.min(maxUnlocked,Math.max(serverIndex,maxUnlocked)));
+
+    var pv=progress.videos&&typeof progress.videos==="object"?progress.videos:{};
+    Object.keys(pv).forEach(function(k){
+      var s=pv[k]||{},l=videoGate[k]||{};
+      var required=Math.max(Number(l.required)||0,Number(s.required)||0);
+      var watched=Math.max(Number(l.watched)||0,Number(s.watched)||0);
+      if(required>0)watched=Math.min(required,watched);
+      videoGate[k]={required:required,watched:watched,done:!!l.done||!!s.done||(required>0&&watched>=required),playing:false,lastTick:0};
+    });
+
+    try{
+      localStorage.setItem(PROGRESS_KEY,JSON.stringify({
+        index:index,maxUnlocked:maxUnlocked,totalScenes:(state.pages||[]).length,
+        percent:Math.max(0,Math.min(100,Number(progress.percent)||0)),
+        videos:videoGate,updatedAt:Number(progress.updatedAt)||Date.now()
+      }));
+    }catch(eLocal){}
+
+    render();
+  }catch(e){}
+}
+window.addEventListener("message",function(event){
+  var d=event&&event.data?event.data:null;
+  if(!d)return;
+  var gelen=String(d.egitimId||"").trim().toUpperCase();
+  if(gelen&&gelen!==String(EGITIM_ID||"").trim().toUpperCase())return;
+
+  if(d.type==="TBPG_TEK_HTML_ILERLEME_YUKLE"){
+    applyServerProgress(d.progress||{});
+    return;
+  }
+  if(d.type==="TBPG_TEK_HTML_ILERLEME_KAYDEDILDI"){
+    var t=document.getElementById("saveText"),tm=document.getElementById("saveTime");
+    if(t)t.textContent="İlerleme kaydedildi";
+    var dt=new Date(Number(d.updatedAt)||Date.now());
+    if(tm)tm.textContent=String(dt.getHours()).padStart(2,"0")+":"+String(dt.getMinutes()).padStart(2,"0");
+    return;
+  }
+  if(d.type==="TBPG_TEK_HTML_ILERLEME_HATA"){
+    var h=document.getElementById("saveText");
+    if(h)h.textContent="Kayıt bekliyor";
+  }
+},false);
+
 loadProgress();
 try{window.parent.postMessage({type:"TBPG_TEK_HTML_READY",egitimId:EGITIM_ID,internalExit:true},"*")}catch(e){}
 if(!state.pages||!state.pages.length){document.getElementById("scene").innerHTML="<h1>İçerik bulunamadı</h1>"}else{render()}
