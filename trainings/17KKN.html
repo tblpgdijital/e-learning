@@ -17,7 +17,7 @@ body{overflow:hidden}button,input{font:inherit}.hidden{display:none!important}
 .brandMark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-weight:950;font-size:22px;background:linear-gradient(145deg,#0cb8b1,#087bd7);box-shadow:0 10px 24px rgba(0,0,0,.18)}
 .brandText strong{display:block;font-size:16px}.brandText span{display:block;font-size:11px;color:#a9c5d5;margin-top:2px}
 .courseSideHead{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.10)}
-.courseSideTitle{font-size:21px;line-height:1.18;font-weight:950;letter-spacing:-.02em}
+.courseSideTitle{font-size:18px;line-height:1.08;font-weight:950;letter-spacing:-.02em;max-width:258px;overflow:hidden;word-break:normal}
 .courseSideSub{font-size:11px;opacity:.67;margin-top:9px;text-transform:uppercase;letter-spacing:.09em}
 .courseScenes{padding:12px 10px 24px;overflow-y:auto;scrollbar-width:thin}
 .courseSceneItem{width:100%;border:0;background:transparent;color:rgba(255,255,255,.80);display:grid;grid-template-columns:34px 30px minmax(0,1fr) 18px;align-items:center;gap:8px;text-align:left;padding:8px 10px;border-radius:13px;cursor:pointer;transition:.22s}
@@ -29,8 +29,8 @@ body{overflow:hidden}button,input{font:inherit}.hidden{display:none!important}
 .sideLeaf{width:26px;height:26px;border-radius:50% 50% 50% 6px;background:linear-gradient(145deg,#5fdc9f,#18a875);transform:rotate(-35deg);box-shadow:0 5px 14px rgba(0,0,0,.20)}
 
 .top{grid-column:2;grid-row:1;background:rgba(255,255,255,.96);border-bottom:1px solid #dce9ef;display:grid;grid-template-columns:auto auto auto minmax(240px,1fr);align-items:center;gap:12px;padding:12px 22px;position:relative;z-index:20;box-shadow:0 6px 22px rgba(0,59,106,.05)}
-.exitBtn{height:48px;border:1px solid #cfe3ee;border-radius:15px;background:linear-gradient(180deg,#f8fcfe,#eaf5fa);color:#083e65;font-weight:900;padding:0 17px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:.2s}
-.exitBtn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,59,106,.10)}
+.exitBtn{width:52px;height:52px;border:0;border-radius:50%;background:linear-gradient(180deg,#173e5f 0%,#12324f 100%);color:#fff;font-size:25px;font-weight:900;padding:0;display:grid;place-items:center;cursor:pointer;transition:.2s;box-shadow:0 10px 24px rgba(10,41,68,.18)}
+.exitBtn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 14px 28px rgba(10,41,68,.24)}
 .completionBox{height:56px;display:flex;align-items:center;gap:10px;padding:5px 12px 5px 7px;border-radius:18px;background:#fff}
 .donut{--p:0;position:relative;width:46px;height:46px;border-radius:50%;background:conic-gradient(#087bd7 calc(var(--p)*1%),#dbeaf1 0);display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,123,215,.14)}
 .donut:after{content:"";width:34px;height:34px;background:#fff;border-radius:50%;position:absolute}.donutIcon{position:relative;z-index:2;color:#087bd7;font-weight:950;font-size:12px}
@@ -76,13 +76,13 @@ body{overflow:hidden}button,input{font:inherit}.hidden{display:none!important}
  .mobileMenuBtn{display:grid;position:fixed;left:10px;top:14px;z-index:100;width:44px;height:44px;border:0;border-radius:13px;place-items:center;background:#073b5c;color:#fff;font-size:23px}
  .mobileSideBackdrop.open{display:block;position:fixed;inset:0;z-index:80;background:rgba(0,20,32,.46);backdrop-filter:blur(2px)}
  .top{grid-column:2;grid-template-columns:auto auto minmax(100px,1fr);gap:7px;padding:8px 10px 8px 62px}
- .exitBtn{height:42px;padding:0 9px;font-size:10px}.completionBox{height:48px;padding:3px 7px}.donut{width:38px;height:38px}.donut:after{width:28px;height:28px}.completionText strong{font-size:14px}.completionText span{display:none}
+ .exitBtn{width:42px;height:42px;font-size:20px}.completionBox{height:48px;padding:3px 7px}.donut{width:38px;height:38px}.donut:after{width:28px;height:28px}.completionText strong{font-size:14px}.completionText span{display:none}
  .savePill{display:none}.progressRailWrap{grid-column:3}.railNode{width:29px;height:29px;font-size:10px}.railSeg{width:18px;height:5px}.motto{display:none}
  .stage{grid-column:2;padding:14px 9px 95px}.scene{width:100%;padding:26px 18px 38px;border-radius:20px}.sceneQuote{display:none}.sceneMainTitle{margin-right:0;column-gap:13px}.sceneTitleNo{width:58px;height:58px;font-size:28px}.sceneTitleText{font-size:clamp(28px,8vw,40px)}
  .verticalNav{right:10px;bottom:12px}.verticalNavBtn{width:48px;height:48px}.navLabel{display:none}.taskToast{top:96px}
 }
 @media(max-width:620px){
- .top{grid-template-columns:auto minmax(90px,1fr)}.completionBox{display:none}.progressRailWrap{grid-column:2}.exitBtn{font-size:0}.exitBtn:after{content:"Çık";font-size:11px}.scene{padding:24px 16px 34px}.block{font-size:16px}
+ .top{grid-template-columns:auto minmax(90px,1fr)}.completionBox{display:none}.progressRailWrap{grid-column:2}.exitBtn{width:40px;height:40px;font-size:19px}.scene{padding:24px 16px 34px}.block{font-size:16px}
 }
 
 /* V76 - Dijital Eğitim Merkezi marka alanı */
@@ -129,7 +129,7 @@ body{overflow:hidden}button,input{font:inherit}.hidden{display:none!important}
     <div class="sideFoot copyright">© 2026 Caner İldeş. All rights reserved.</div>
   </aside>
   <header class="top">
-    <button id="exitBtn" class="exitBtn" type="button"><span>✕</span><span>Eğitimden Çık</span></button>
+    <button id="exitBtn" class="exitBtn" type="button" title="Eğitimden Çık" aria-label="Eğitimden Çık">✕</button>
     <div class="completionBox"><div id="donut" class="donut"><span class="donutIcon">✓</span></div><div class="completionText"><strong id="percent">0%</strong><span>Tamamlandı</span></div></div>
     <div class="savePill"><span class="saveCheck">✓</span><span><span id="saveText">İlerleme kaydedildi</span><br><small id="saveTime" class="saveTime"></small></span></div>
     <div class="progressRailWrap"><div id="progressRail" class="progressRail"></div></div>
@@ -162,7 +162,23 @@ function loadProgress(){try{var p=JSON.parse(localStorage.getItem(PROGRESS_KEY)|
 function saveProgress(){try{var videos={};Object.keys(videoGate).forEach(function(k){var g=videoGate[k];videos[k]={watched:Number(g.watched)||0,done:!!g.done,required:Number(g.required)||0}});var pct=Math.round(((maxUnlocked+1)/Math.max(1,state.pages.length))*100);var payload={index:index,maxUnlocked:maxUnlocked,percent:pct,videos:videos,updatedAt:Date.now()};localStorage.setItem(PROGRESS_KEY,JSON.stringify(payload));var d=new Date(payload.updatedAt),tm=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");document.getElementById("saveText").textContent="İlerleme kaydedildi";document.getElementById("saveTime").textContent=tm;try{window.parent.postMessage({type:"TBPG_TEK_HTML_ILERLEME",egitimId:EGITIM_ID,index:index,maxUnlocked:maxUnlocked,percent:pct,videos:videos},"*")}catch(e){}}catch(e){}}
 
 function renderRail(){var rail=document.getElementById("progressRail"),html="";(state.pages||[]).forEach(function(p,i){var done=i<maxUnlocked,active=i===index;html+='<div class="railUnit">';if(i>0)html+='<span class="railSeg '+(i<=maxUnlocked?"done ":"")+(active?"active":"")+'"></span>';html+='<button type="button" class="railNode '+(done?"done ":"")+(active?"active":"")+'" data-i="'+i+'" title="'+esc(p.title||("Sahne "+(i+1)))+'">'+(done?"✓":(i+1))+'</button></div>'});rail.innerHTML=html;Array.from(rail.querySelectorAll(".railNode")).forEach(function(btn){btn.onclick=function(){var n=Number(btn.dataset.i);if(n<=maxUnlocked){index=n;render()}}});var active=rail.querySelector(".railNode.active");if(active)active.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"})}
-function renderCourseSide(){var title=document.getElementById("courseSideTitle"),list=document.getElementById("courseScenes");if(title)title.textContent=state.title||EGITIM_ID;if(!list)return;list.innerHTML=(state.pages||[]).map(function(p,i){var done=i<maxUnlocked,active=i===index,open=i<=maxUnlocked;return '<button type="button" class="courseSceneItem '+(done?"done ":"")+(active?"active":"")+'" data-i="'+i+'" '+(open?"":"disabled")+'><span class="courseSceneNo">'+(done?"✓":(i+1))+'</span><span class="courseSceneIcon">'+sceneIcon(p.title,i)+'</span><span class="courseSceneName">'+esc(p.title||("Sahne "+(i+1)))+'</span><span class="courseSceneState">'+(done?"✓":(active?"•":""))+'</span></button>'}).join("");Array.from(list.querySelectorAll(".courseSceneItem")).forEach(function(btn){btn.onclick=function(){var n=Number(btn.dataset.i);if(n<=maxUnlocked){index=n;render()}}})}
+function fitCourseSideTitle(){
+  var el=document.getElementById("courseSideTitle");
+  if(!el)return;
+  var size=18,min=11;
+  el.style.fontSize=size+"px";
+  el.style.lineHeight="1.08";
+  el.style.maxHeight="none";
+  while(size>min){
+    var line=parseFloat(getComputedStyle(el).lineHeight)||size*1.08;
+    if(el.scrollHeight<=line*2+2)break;
+    size-=0.5;
+    el.style.fontSize=size+"px";
+  }
+  var finalLine=parseFloat(getComputedStyle(el).lineHeight)||size*1.08;
+  el.style.maxHeight=(finalLine*2+2)+"px";
+}
+function renderCourseSide(){var title=document.getElementById("courseSideTitle"),list=document.getElementById("courseScenes");if(title){title.textContent=state.title||EGITIM_ID;fitCourseSideTitle();}if(!list)return;list.innerHTML=(state.pages||[]).map(function(p,i){var done=i<maxUnlocked,active=i===index,open=i<=maxUnlocked;return '<button type="button" class="courseSceneItem '+(done?"done ":"")+(active?"active":"")+'" data-i="'+i+'" '+(open?"":"disabled")+'><span class="courseSceneNo">'+(done?"✓":(i+1))+'</span><span class="courseSceneIcon">'+sceneIcon(p.title,i)+'</span><span class="courseSceneName">'+esc(p.title||("Sahne "+(i+1)))+'</span><span class="courseSceneState">'+(done?"✓":(active?"•":""))+'</span></button>'}).join("");Array.from(list.querySelectorAll(".courseSceneItem")).forEach(function(btn){btn.onclick=function(){var n=Number(btn.dataset.i);if(n<=maxUnlocked){index=n;render()}}})}
 function updateTop(){var pct=Math.round(((maxUnlocked+1)/Math.max(1,state.pages.length))*100);document.getElementById("percent").textContent=pct+"%";document.getElementById("donut").style.setProperty("--p",pct);renderRail()}
 
 function videoStatus(id){var g=videoGate[id],el=document.getElementById("vs_"+id);if(!g||!el)return;var rem=Math.max(0,g.required-g.watched),pct=g.required>0?Math.min(100,Math.round(g.watched/g.required*100)):100;el.textContent=g.done?"Video %100 · Tamamlandı ✓":("Video %"+pct+" · "+(g.playing?"İzleniyor":"Durduruldu")+" · Kalan "+fmt(rem));el.className="videoStatus "+(g.done?"done":"")}
@@ -207,6 +223,7 @@ document.getElementById("exitBtn").onclick=exitTraining;
 document.getElementById("mobileMenuBtn").onclick=function(){toggleMobileSide()};
 document.getElementById("mobileSideBackdrop").onclick=function(){toggleMobileSide(false)};
 loadProgress();
+try{window.parent.postMessage({type:"TBPG_TEK_HTML_READY",egitimId:EGITIM_ID,internalExit:true},"*")}catch(e){}
 if(!state.pages||!state.pages.length){document.getElementById("scene").innerHTML="<h1>İçerik bulunamadı</h1>"}else{render()}
 </script>
 </body>
