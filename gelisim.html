@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#002b49">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="TBPG Eğitim">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="icon" href="./icon-192.png">
+  <title>TUI BLUE Palm Garden - Gelişim & Uyum Merkezi</title>
+  <meta name="tbpg-build" content="20260927-gelisim-v1">
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script src="./config.js?v=shared-onesignal-20260913-3"></script>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06182c;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    #appFrame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
+    #boot{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(rgba(255,255,255,.026) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.026) 1px,transparent 1px),radial-gradient(circle at 76% 17%,rgba(24,185,154,.22),transparent 34%),linear-gradient(145deg,#06172a,#08364d 58%,#0d5960);background-size:30px 30px,30px 30px,auto,auto;color:#fff;transition:opacity .35s ease}
+    #boot.hide{opacity:0;pointer-events:none}.bootBox{width:min(410px,90vw);text-align:center;padding:32px 26px 28px;border-radius:27px;background:linear-gradient(145deg,rgba(9,48,66,.88),rgba(7,31,48,.95));border:1px solid rgba(139,231,211,.15);box-shadow:0 30px 82px rgba(0,0,0,.38)}
+    .bootIcon{width:82px;height:82px;border-radius:23px;margin:0 auto 17px;display:grid;place-items:center;background:linear-gradient(145deg,#18a98e,#0c5c70);box-shadow:0 17px 38px rgba(0,0,0,.30);animation:float 1.9s ease-in-out infinite}.bootIcon svg{width:40px;height:40px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .bootKicker{font-size:9px;letter-spacing:2px;font-weight:800;color:#7ed8c6;margin-bottom:6px}.bootTitle{font-weight:850;font-size:21px}.bootSub{color:#a7c8cb;font-size:12px;margin-top:7px}.bootLine{width:210px;height:6px;background:rgba(255,255,255,.08);border-radius:20px;overflow:hidden;margin:20px auto 0}.bootLine:after{content:"";display:block;width:38%;height:100%;background:linear-gradient(90deg,#13a187,#8ee0ce,#13a187);border-radius:inherit;animation:move 1.2s ease-in-out infinite}
+    @keyframes move{from{transform:translateX(-115%)}to{transform:translateX(295%)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    #pushBtn{position:fixed;right:14px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:99999;border:0;border-radius:999px;padding:12px 16px;background:#0b2b4e;color:#fff;font-weight:800;box-shadow:0 10px 28px rgba(0,0,0,.28);display:none;cursor:pointer}
+    #status{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:100001;background:rgba(6,24,44,.96);color:#fff;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:700;display:none;max-width:calc(100% - 24px);text-align:center}
+  </style>
+</head>
+<body>
+  <div id="boot"><div class="bootBox"><div class="bootIcon"><svg viewBox="0 0 48 48"><path d="M7 38h34"/><path d="M10 34V24"/><path d="M20 34V18"/><path d="M30 34V12"/><path d="M39 34V8"/><path d="m8 20 10-6 9 3 12-10"/></svg></div><div class="bootKicker">TUI BLUE PALM GARDEN</div><div class="bootTitle">GELİŞİM & UYUM MERKEZİ</div><div class="bootSub">Eğitim uyumu, analizler ve yönetim raporları hazırlanıyor...</div><div class="bootLine"></div></div></div>
+  <iframe id="appFrame" title="TUI BLUE Palm Garden Gelişim ve Uyum Merkezi" allow="clipboard-read; clipboard-write; fullscreen" allowfullscreen></iframe>
+  <button id="pushBtn" type="button">🔔 Bildirimleri Aç</button>
+  <div id="status"></div>
+<script>
+(() => {
+  'use strict';
+  const cfg=window.TBPG_EDUCATION_CONFIG||{};
+  const frame=document.getElementById('appFrame'),boot=document.getElementById('boot'),pushBtn=document.getElementById('pushBtn');
+  let currentEducationId='',oneSignalApi=null,pendingEducationUser=null;
+  function showStatus(t,ms=2600){const e=document.getElementById('status');e.textContent=t;e.style.display='block';clearTimeout(showStatus.timer);showStatus.timer=setTimeout(()=>e.style.display='none',ms)}
+  function portalUrl(){try{const u=new URL(cfg.APP_URL,location.href);u.searchParams.set('portal','GELISIM');u.searchParams.set('embedded','1');return u.toString()}catch(_){const sep=String(cfg.APP_URL||'').includes('?')?'&':'?';return String(cfg.APP_URL||'')+sep+'portal=GELISIM&embedded=1'}}
+  frame.src=portalUrl();
+  frame.addEventListener('load',()=>setTimeout(()=>boot.classList.add('hide'),180));
+  if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20260927-gelisim-v1',{scope:'/e-learning/'}).catch(err=>console.warn('PWA worker:',err)))}
+  function refreshPushButton(){if(!('Notification'in window)||!('serviceWorker'in navigator)){pushBtn.style.display='none';return}pushBtn.style.display=Notification.permission==='default'?'block':'none'}
+  async function bindUser(p){if(!p||!p.educationId)return;pendingEducationUser=p;currentEducationId=String(p.educationId).trim();if(!oneSignalApi)return;try{await oneSignalApi.login(currentEducationId);await oneSignalApi.User.addTags({portal_egitim:'1',portal_gelisim:'1',egitim_departman:String(p.department||''),egitim_rol:String(p.role||'')});refreshPushButton()}catch(e){console.error(e)}}
+  window.OneSignalDeferred=window.OneSignalDeferred||[];
+  window.OneSignalDeferred.push(async function(OneSignal){oneSignalApi=OneSignal;try{await OneSignal.init({appId:cfg.ONESIGNAL_APP_ID,serviceWorkerPath:cfg.ONESIGNAL_WORKER_PATH,serviceWorkerParam:{scope:cfg.ONESIGNAL_WORKER_SCOPE},autoResubscribe:true});if(pendingEducationUser)await bindUser(pendingEducationUser);refreshPushButton()}catch(e){console.error(e)}});
+  pushBtn.addEventListener('click',async()=>{try{if(!oneSignalApi)return showStatus('Bildirim sistemi hazırlanıyor');await oneSignalApi.Notifications.requestPermission();refreshPushButton()}catch(e){showStatus('Bildirim izni açılamadı')}});
+  window.addEventListener('message',async(event)=>{
+    const d=event.data||{};
+    if(d.type==='TBPG_EDUCATION_PORTAL_SWITCH'&&d.portal==='EGITIM'){
+      const m=String(d.mode||'').toUpperCase();
+      if(m==='GELISIM') return;
+      if(m==='YONETIM'){location.href='./yonetim.html';return}
+      if(m==='PERSONEL'){location.href='./';return}
+    }
+    if(!frame||event.source!==frame.contentWindow)return;
+    if(d.type==='TBPG_EDUCATION_USER')await bindUser(d);
+    else if(d.type==='TBPG_EDUCATION_LOGOUT'){currentEducationId='';pendingEducationUser=null;pushBtn.style.display='none'}
+  });
+})();
+</script>
+</body>
+</html>
